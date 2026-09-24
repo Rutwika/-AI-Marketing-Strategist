@@ -1,0 +1,14 @@
+customer_id,email,first_purchase_date,last_purchase_date,orders_12m,total_spend,coupon_orders_pct,email_opens_30d,site_visits_30d,cart_abandoned,channel_pref
+C001,ana@example.com,2023-02-11,2026-09-10,14,1820,5,9,12,no,email
+C002,raj@example.com,2024-11-02,2026-03-15,9,1310,10,0,0,no,sms
+C003,lee@example.com,,,0,0,0,4,7,yes,email
+C004,sam@example.com,2025-06-20,2026-08-30,11,240,90,3,5,no,email
+C005,priya@example.com,2022-01-15,2026-09-18,22,3450,2,14,18,no,email
+C006,marco@example.com,2026-09-05,2026-09-05,1,85,0,6,9,no,push
+C007,fatima@example.com,2026-08-22,2026-08-22,1,120,0,2,4,no,email
+C008,jonas@example.com,2021-05-03,2025-11-10,17,2760,8,1,0,no,sms
+C009,tara@example.com,,,0,0,0,11,15,yes,sms
+C010,wei@example.com,2025-01-09,2026-09-12,19,410,85,5,6,no,email
+C011,olu@example.com,2019-03-30,2020-02-14,3,260,0,0,0,no,email
+C012,dana@example.com,2020-07-19,2021-01-05,2,95,0,0,1,no,push
+C013,ken@example.com,2023-09-01,2026-09-01,6,890,15,7,10,no,email

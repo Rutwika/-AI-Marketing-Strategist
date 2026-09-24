@@ -1,0 +1,6 @@
+CustomerRef,ContactEmail,JoinedOn,LastOrderOn,PurchaseCount,Revenue,PromoUsagePct,Opens30d,Visits30d,AbandonedCart,PreferredChannel
+X-901,helena@example.com,2022-04-18,2026-09-14,16,2140,4,10,13,no,email
+X-902,tomas@example.com,2024-06-30,2026-02-02,7,980,12,0,1,no,sms
+X-903,ines@example.com,,,0,0,0,9,11,yes,email
+X-904,diego@example.com,2025-08-01,2026-08-28,13,300,88,4,6,no,email
+X-905,noor@example.com,2020-09-09,2020-12-01,1,150,0,0,0,no,email
