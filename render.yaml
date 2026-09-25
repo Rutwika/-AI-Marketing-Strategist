@@ -8,6 +8,11 @@ services:
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /api/health
     envVars:
+      # Pinned to match what was tested locally - pydantic-core has no
+      # prebuilt wheel yet for newer Python versions (e.g. 3.14), which
+      # otherwise forces a from-source build that fails on Render.
+      - key: PYTHON_VERSION
+        value: 3.13.15
       - key: GOOGLE_API_KEY
         sync: false
       - key: SUPABASE_URL
