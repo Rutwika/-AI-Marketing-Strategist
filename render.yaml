@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: roma-backend
+    env: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+      # Update this to the deployed Vercel URL once the frontend is live
+      # (Render dashboard -> roma-backend -> Environment), so CORS allows it.
+      - key: FRONTEND_ORIGIN
+        value: http://localhost:5173
