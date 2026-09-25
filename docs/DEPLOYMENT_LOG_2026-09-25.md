@@ -37,7 +37,20 @@ A full-stack app: React (Vite + Tailwind) frontend → FastAPI backend → LangC
 
 - Comparatively smooth — root directory set to `frontend`, three env vars added, deployed successfully.
 - Finding the live URL after deploy wasn't obvious from the deploy confirmation flow — check the post-deploy screen or the project dashboard's overview page.
-- Open at time of writing: point Render's `FRONTEND_ORIGIN` at the live Vercel URL for CORS, then run one final live check end to end.
+- Live at **https://ai-marketing-strategist.vercel.app** - confirmed the SPA rewrite in `frontend/vercel.json` correctly serves client-side routes (e.g. `/app/analyze`) instead of 404ing on refresh.
+
+## Final wiring: CORS
+
+`FRONTEND_ORIGIN` in `render.yaml` was still a static `value:` (not `sync: false`), so setting it directly in the Render dashboard would have been silently reverted on the next blueprint sync. Fixed at the source instead - updated `render.yaml` to `https://ai-marketing-strategist.vercel.app,http://localhost:5173` (comma-separated, both kept so local dev still works) and pushed. Confirmed with a real CORS preflight (`OPTIONS /api/analyze` with `Origin: https://ai-marketing-strategist.vercel.app`) that the backend now allows the deployed frontend's origin.
+
+## Status: Week 1 MVP fully live
+
+Both services deployed and verified end to end with a real signup → analyze → save → retrieve flow:
+- Frontend: https://ai-marketing-strategist.vercel.app
+- Backend: https://roma-backend-6iqs.onrender.com
+- Repo: https://github.com/Rutwika/-AI-Marketing-Strategist
+
+Ready to submit per the PRD's Week 1 success criteria (GitHub repo + live URL).
 
 ## Code bugs found and fixed (via testing, not inspection)
 
