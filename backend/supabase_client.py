@@ -6,11 +6,14 @@ service key must never be sent to the frontend; only SUPABASE_URL and the
 ANON key go there (frontend/.env.example).
 """
 
+import logging
 import os
 from functools import lru_cache
 
 from fastapi import HTTPException, status
 from supabase import Client, create_client
+
+logger = logging.getLogger("ai_marketing_strategist")
 
 
 @lru_cache
@@ -33,9 +36,15 @@ def get_user_id(authorization: str | None) -> str:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Missing bearer token")
 
     token = authorization.split(" ", 1)[1]
+    # Deliberately outside the try/except below: a misconfigured client
+    # (missing/bad env vars) is a server-side problem (500), not a bad
+    # token (401) - conflating the two here previously hid real config
+    # errors behind a misleading "Invalid or expired token" message.
+    client = get_client()
     try:
-        response = get_client().auth.get_user(token)
+        response = client.auth.get_user(token)
     except Exception as exc:  # supabase-py raises on an invalid/expired token
+        logger.exception("Supabase token verification failed")
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid or expired token") from exc
 
     if response is None or response.user is None:
