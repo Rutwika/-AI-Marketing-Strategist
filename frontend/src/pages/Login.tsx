@@ -20,19 +20,31 @@ export function Login() {
     setInfo(null)
     setSubmitting(true)
 
-    const { error } = mode === 'signin' ? await signIn(email, password) : await signUp(email, password)
+    if (mode === 'signin') {
+      const { error } = await signIn(email, password)
+      setSubmitting(false)
+      if (error) {
+        setError(error)
+        return
+      }
+      navigate('/app')
+      return
+    }
 
+    const { error, confirmedImmediately } = await signUp(email, password)
     setSubmitting(false)
     if (error) {
       setError(error)
       return
     }
-    if (mode === 'signup') {
-      setInfo('Account created. Check your inbox to confirm your email, then log in.')
-      setMode('signin')
+    if (confirmedImmediately) {
+      // This project doesn't require email confirmation - the sign-up
+      // already returned an active session, so go straight in.
+      navigate('/app')
       return
     }
-    navigate('/app')
+    setInfo('Account created. Check your inbox to confirm your email, then log in.')
+    setMode('signin')
   }
 
   return (
