@@ -28,7 +28,7 @@ export function ResultsTable({ results }: { results: CustomerResult[] }) {
         <tbody className="divide-y divide-slate-100">
           {results.map((r) => (
             <tr key={r.customer_id}>
-              <td className="px-4 py-3 font-medium text-slate-900">{r.customer_id}</td>
+              <td className="px-4 py-3 font-medium text-ink">{r.customer_id}</td>
               <td className="px-4 py-3">
                 <span
                   className={`whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-medium ${

@@ -37,7 +37,7 @@ export function Login() {
 
   return (
     <div className="mx-auto max-w-sm px-4 py-16">
-      <h1 className="text-2xl font-semibold text-slate-900">
+      <h1 className="text-2xl font-semibold text-ink">
         {mode === 'signin' ? 'Log in' : 'Create an account'}
       </h1>
 
@@ -49,7 +49,7 @@ export function Login() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="rounded-md border border-slate-300 px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none"
+            className="rounded-md border border-slate-300 px-3 py-2 text-ink focus:border-lime-deep focus:outline-none"
           />
         </label>
         <label className="flex flex-col gap-1 text-sm font-medium text-slate-700">
@@ -60,7 +60,7 @@ export function Login() {
             minLength={6}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="rounded-md border border-slate-300 px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none"
+            className="rounded-md border border-slate-300 px-3 py-2 text-ink focus:border-lime-deep focus:outline-none"
           />
         </label>
 
@@ -70,7 +70,7 @@ export function Login() {
         <button
           type="submit"
           disabled={submitting}
-          className="mt-2 rounded-md bg-slate-900 px-4 py-2 font-medium text-white hover:bg-slate-700 disabled:opacity-50"
+          className="mt-2 rounded-full bg-ink px-4 py-2 font-medium text-white hover:bg-ink-soft disabled:opacity-50"
         >
           {submitting ? 'Please wait…' : mode === 'signin' ? 'Log in' : 'Sign up'}
         </button>
@@ -82,7 +82,7 @@ export function Login() {
           setError(null)
           setInfo(null)
         }}
-        className="mt-4 text-sm text-slate-500 hover:text-slate-900"
+        className="mt-4 text-sm text-slate-500 hover:text-ink"
       >
         {mode === 'signin' ? "Don't have an account? Sign up" : 'Already have an account? Log in'}
       </button>

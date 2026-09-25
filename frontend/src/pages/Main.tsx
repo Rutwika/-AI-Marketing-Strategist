@@ -15,15 +15,15 @@ const STEPS = [
 export function Main() {
   return (
     <div className="mx-auto max-w-2xl px-4 py-16">
-      <h1 className="text-3xl font-semibold text-slate-900">How it works</h1>
+      <h1 className="text-3xl font-semibold text-ink">How it works</h1>
       <ol className="mt-8 flex flex-col gap-6">
         {STEPS.map((step, i) => (
           <li key={step.title} className="flex gap-4">
-            <span className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-slate-900 text-sm font-semibold text-white">
+            <span className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-lime text-sm font-bold text-ink">
               {i + 1}
             </span>
             <div>
-              <p className="font-medium text-slate-900">{step.title}</p>
+              <p className="font-medium text-ink">{step.title}</p>
               <p className="text-sm text-slate-600">{step.detail}</p>
             </div>
           </li>
@@ -33,14 +33,14 @@ export function Main() {
       <div className="mt-10 flex flex-wrap items-center gap-4">
         <Link
           to="/app/analyze"
-          className="rounded-lg bg-slate-900 px-6 py-3 font-medium text-white hover:bg-slate-700"
+          className="rounded-full bg-ink px-6 py-3 font-medium text-white hover:bg-ink-soft"
         >
           Upload a CSV
         </Link>
         <a
           href="/sample-customers.csv"
           download
-          className="text-sm font-medium text-slate-600 underline hover:text-slate-900"
+          className="text-sm font-medium text-slate-600 underline hover:text-ink"
         >
           Download a sample CSV
         </a>

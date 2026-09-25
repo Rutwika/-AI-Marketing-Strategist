@@ -6,35 +6,40 @@ export function Header() {
   const navigate = useNavigate()
 
   return (
-    <header className="border-b border-slate-200 bg-white">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-        <Link to="/" className="font-semibold text-slate-900">
-          AI Marketing Strategist
+    <header className="bg-ink">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+        <Link to="/" className="font-display text-3xl font-black text-brand-blue">
+          Roma
         </Link>
-        <nav className="flex items-center gap-4 text-sm">
+        <nav className="flex items-center gap-5 text-sm">
           {user ? (
             <>
-              <Link to="/app" className="text-slate-600 hover:text-slate-900">
+              <Link to="/app" className="text-white/70 hover:text-white">
                 Dashboard
               </Link>
-              <span className="text-slate-400">{user.email}</span>
+              <span className="hidden text-white/40 sm:inline">{user.email}</span>
               <button
                 onClick={async () => {
                   await signOut()
                   navigate('/')
                 }}
-                className="rounded-md border border-slate-300 px-3 py-1.5 text-slate-700 hover:bg-slate-50"
+                className="rounded-full border border-white/25 px-4 py-1.5 font-medium text-white hover:bg-white/10"
               >
                 Log out
               </button>
             </>
           ) : (
-            <Link
-              to="/login"
-              className="rounded-md bg-slate-900 px-3 py-1.5 text-white hover:bg-slate-700"
-            >
-              Log in
-            </Link>
+            <>
+              <Link to="/login" className="text-white/70 hover:text-white">
+                Sign in
+              </Link>
+              <Link
+                to="/login"
+                className="rounded-full bg-lime px-4 py-1.5 font-semibold text-ink hover:bg-lime-deep"
+              >
+                Get started
+              </Link>
+            </>
           )}
         </nav>
       </div>

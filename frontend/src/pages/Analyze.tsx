@@ -126,7 +126,7 @@ export function Analyze() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">
-      <h1 className="text-3xl font-semibold text-slate-900">Analyze customers</h1>
+      <h1 className="text-3xl font-semibold text-ink">Analyze customers</h1>
 
       {status !== 'success' && (
         <div className="mt-8 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -137,7 +137,7 @@ export function Analyze() {
               type="file"
               accept=".csv"
               onChange={onFileChange}
-              className="mt-1 rounded-md border border-slate-300 px-3 py-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-slate-900 file:px-3 file:py-1.5 file:text-white"
+              className="mt-1 rounded-md border border-slate-300 px-3 py-2 text-sm file:mr-3 file:rounded-full file:border-0 file:bg-ink file:px-3 file:py-1.5 file:text-white"
             />
           </label>
 
@@ -149,7 +149,7 @@ export function Analyze() {
               maxLength={1000}
               rows={3}
               placeholder='e.g. "VIP: 5+ orders and $500+ lifetime spend"'
-              className="rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none"
+              className="rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-lime-deep focus:outline-none"
             />
           </label>
 
@@ -176,7 +176,7 @@ export function Analyze() {
           <button
             onClick={runAnalysis}
             disabled={!file || status === 'loading'}
-            className="mt-6 rounded-lg bg-slate-900 px-6 py-3 font-medium text-white hover:bg-slate-700 disabled:opacity-50"
+            className="mt-6 rounded-full bg-ink px-6 py-3 font-medium text-white hover:bg-ink-soft disabled:opacity-50"
           >
             {status === 'loading' ? 'Analyzing… (up to ~30s)' : 'Analyze'}
           </button>
@@ -190,7 +190,7 @@ export function Analyze() {
               {Object.entries(result.summary.segments).map(([segment, count]) => (
                 <span
                   key={segment}
-                  className="rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-700"
+                  className="rounded-full bg-lime-pale px-3 py-1 text-sm font-medium text-ink"
                 >
                   {segment}: {count}
                 </span>
@@ -205,7 +205,7 @@ export function Analyze() {
               </button>
               <button
                 onClick={reset}
-                className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700"
+                className="rounded-full bg-ink px-4 py-2 text-sm font-medium text-white hover:bg-ink-soft"
               >
                 Run another file
               </button>

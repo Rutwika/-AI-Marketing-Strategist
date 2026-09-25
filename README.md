@@ -1,4 +1,4 @@
-# AI Marketing Strategist — Week 1 MVP
+# Roma — AI Marketing Strategist (Week 1 MVP)
 
 Upload a customer CSV, get back a segment, a plain-language reason, and a next-best action
 (channel + message + offer) for every customer — no SQL, no fixed schema. Built for Week 1 of the
