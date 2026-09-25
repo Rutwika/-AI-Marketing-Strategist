@@ -19,7 +19,7 @@ services:
         sync: false
       - key: SUPABASE_SERVICE_KEY
         sync: false
-      # Update this to the deployed Vercel URL once the frontend is live
-      # (Render dashboard -> roma-backend -> Environment), so CORS allows it.
+      # Comma-separated - main.py splits on "," (see FastAPI CORSMiddleware
+      # setup). Includes localhost too so local dev keeps working.
       - key: FRONTEND_ORIGIN
-        value: http://localhost:5173
+        value: https://ai-marketing-strategist.vercel.app,http://localhost:5173
