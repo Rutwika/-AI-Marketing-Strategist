@@ -13,7 +13,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from rules import BUSINESS_RULES_PROMPT
 from schemas import AnalyzeResult
 
-GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.5-flash-lite")
 TEMPERATURE = 0.2
 
 # Fixed instructions (docs/TRD.md > "Prompt structure"). The variable parts -
