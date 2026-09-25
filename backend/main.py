@@ -41,8 +41,10 @@ MAX_FILE_BYTES = 1_000_000  # < 1 MB, per the TRD
 MIN_ROWS = 1
 MAX_ROWS = 20
 
-# Column names (case-insensitive) that count as an existing customer identifier.
-_ID_LIKE_COLUMNS = {"customer_id", "customerid", "id", "email", "customer", "user_id", "account_id"}
+# Column names (case-insensitive) that count as an existing customer identifier,
+# in priority order - a list, not a set, so "customer_id" is always preferred
+# over a looser match like "email" when a CSV has both.
+_ID_LIKE_COLUMNS = ["customer_id", "customerid", "id", "customer", "user_id", "account_id", "email"]
 
 
 def _normalize_customer_id_column(df: pd.DataFrame) -> pd.DataFrame:
@@ -57,6 +59,9 @@ def _normalize_customer_id_column(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
     if match is not None:
         if match != "customer_id":
+            # Defensive: even with the priority order above, guard against a
+            # rename colliding with a pre-existing "customer_id" column.
+            df = df.drop(columns=["customer_id"], errors="ignore")
             df = df.rename(columns={match: "customer_id"})
     else:
         df.insert(0, "customer_id", [f"row_{i + 1}" for i in range(len(df))])

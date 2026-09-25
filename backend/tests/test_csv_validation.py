@@ -58,3 +58,15 @@ def test_synthesizes_id_column_when_none_present():
     df = pd.DataFrame({"spend": [1, 2, 3]})
     normalized = _normalize_customer_id_column(df)
     assert list(normalized["customer_id"]) == ["row_1", "row_2", "row_3"]
+
+
+def test_prefers_existing_customer_id_over_email_without_collision():
+    # Regression test: a CSV with BOTH customer_id and email columns must not
+    # rename email onto customer_id and produce a duplicate column.
+    import pandas as pd
+
+    df = pd.DataFrame({"customer_id": ["C001", "C002"], "email": ["a@x.com", "b@x.com"], "spend": [1, 2]})
+    normalized = _normalize_customer_id_column(df)
+    assert list(normalized.columns).count("customer_id") == 1
+    assert list(normalized["customer_id"]) == ["C001", "C002"]
+    assert list(normalized["email"]) == ["a@x.com", "b@x.com"]
