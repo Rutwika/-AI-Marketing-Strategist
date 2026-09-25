@@ -16,6 +16,7 @@ import pandas as pd
 from dotenv import load_dotenv
 from fastapi import FastAPI, File, Form, Header, HTTPException, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.concurrency import run_in_threadpool
 
 load_dotenv()
 
@@ -150,7 +151,13 @@ async def analyze(
     custom_segments: str | None = Form(default=None),
     authorization: str | None = Header(default=None),
 ):
-    user_id = get_user_id(authorization)
+    # get_user_id, chain.analyze and _save_run are all synchronous, blocking
+    # I/O (HTTP calls to Supabase/Gemini). Run them in a thread pool instead
+    # of calling them directly - a blocking call here would freeze this
+    # process's single event loop for the whole request, including Render's
+    # own health-check pings, which reads as the service being dead and
+    # triggers a restart mid-request.
+    user_id = await run_in_threadpool(get_user_id, authorization)
 
     if custom_segments and len(custom_segments) > 1000:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "custom_segments must be 1000 characters or fewer.")
@@ -161,7 +168,7 @@ async def analyze(
     last_violations: list[str] = []
     for attempt in range(2):
         try:
-            result = chain.analyze(csv_text, custom_segments)
+            result = await run_in_threadpool(chain.analyze, csv_text, custom_segments)
         except Exception as exc:
             logger.exception("Gemini call failed (attempt %s)", attempt + 1)
             if attempt == 1:
@@ -170,7 +177,7 @@ async def analyze(
 
         violations = rules.check_guardrails(input_ids, result)
         if not violations:
-            _save_run(user_id, file.filename or "upload.csv", len(df), custom_segments, result)
+            await run_in_threadpool(_save_run, user_id, file.filename or "upload.csv", len(df), custom_segments, result)
             return result
 
         last_violations = violations
