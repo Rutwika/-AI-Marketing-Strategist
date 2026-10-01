@@ -21,7 +21,8 @@ create table if not exists public.run_results (
   action text not null,
   offer text not null,
   discount_pct integer not null,
-  confidence text not null
+  confidence text not null,
+  sources jsonb not null default '[]'::jsonb
 );
 
 alter table public.runs enable row level security;

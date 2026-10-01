@@ -23,3 +23,18 @@ services:
       # setup). Includes localhost too so local dev keeps working.
       - key: FRONTEND_ORIGIN
         value: https://ai-marketing-strategist.vercel.app,http://localhost:5173
+      # Pinecone (RAG: research-grounded segment reasoning, see backend/rag/)
+      - key: PINECONE_API_KEY
+        sync: false
+      - key: PINECONE_INDEX_NAME
+        value: marketing-segment-research
+      - key: PINECONE_EMBEDDING_MODEL
+        value: models/gemini-embedding-001
+      - key: PINECONE_EMBEDDING_DIMENSION
+        value: "768"
+      - key: PINECONE_CLOUD
+        value: aws
+      - key: PINECONE_REGION
+        value: us-east-1
+      - key: RAG_TOP_K
+        value: "3"

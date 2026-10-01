@@ -57,6 +57,20 @@ export function ResultsCards({ results }: { results: CustomerResult[] }) {
 
           <p className="mt-3 text-sm leading-relaxed text-ink-soft">{r.reason}</p>
 
+          {r.sources.length > 0 && (
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {r.sources.map((s) => (
+                <span
+                  key={s}
+                  className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-600"
+                  title={s}
+                >
+                  {s}
+                </span>
+              ))}
+            </div>
+          )}
+
           <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-line pt-4">
             <Field label="Value tier" value={r.value_tier} />
             <Field label="Channel" value={r.channel} />

@@ -6,6 +6,9 @@ backend/**/__pycache__/
 .env
 backend/.env
 
+# RAG source PDFs - local-only, never committed (see backend/rag/knowledge_base/README.md)
+backend/rag/knowledge_base/*.pdf
+
 # Frontend (frontend/ has its own .gitignore too, kept here as a backstop)
 frontend/node_modules/
 frontend/dist/

@@ -131,6 +131,7 @@ def _save_run(user_id: str, file_name: str, row_count: int, custom_segments: str
                 "offer": r.offer,
                 "discount_pct": r.discount_pct,
                 "confidence": r.confidence,
+                "sources": r.sources,
             }
             for r in result.results
         ]
@@ -236,6 +237,7 @@ def get_run(run_id: str, authorization: str | None = Header(default=None)):
             discount_pct=r["discount_pct"],
             timing=r.get("timing", ""),
             confidence=r["confidence"],
+            sources=r.get("sources") or [],
         )
         for r in results_resp.data
     ]

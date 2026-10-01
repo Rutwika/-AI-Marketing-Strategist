@@ -25,6 +25,7 @@ export interface CustomerResult {
   discount_pct: number
   timing: string
   confidence: Confidence
+  sources: string[]
 }
 
 export interface AnalyzeResult {
@@ -33,6 +34,7 @@ export interface AnalyzeResult {
     segments: Record<string, number>
   }
   results: CustomerResult[]
+  rag_warning?: string | null
 }
 
 export interface RunRecord {

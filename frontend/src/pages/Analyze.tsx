@@ -185,6 +185,11 @@ export function Analyze() {
 
       {status === 'success' && result && (
         <div className="mt-8">
+          {result.rag_warning && (
+            <div className="mb-4 rounded-md bg-amber-50 px-4 py-3 text-sm text-amber-800">
+              {result.rag_warning}
+            </div>
+          )}
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap gap-2">
               {Object.entries(result.summary.segments).map(([segment, count]) => (
