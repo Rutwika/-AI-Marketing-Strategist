@@ -30,14 +30,14 @@ const COLUMNS = [
 
 export function ResultsTable({ results }: { results: CustomerResult[] }) {
   return (
-    <div className="mt-6 overflow-x-auto rounded-2xl border border-line bg-white shadow-sm">
+    <div className="mt-6 max-h-[70vh] overflow-auto rounded-2xl border border-line bg-white shadow-sm">
       <table className="w-full min-w-[1400px] border-collapse text-left text-sm">
-        <thead>
+        <thead className="sticky top-0 z-10">
           <tr className="border-b border-line bg-slate-50">
             {COLUMNS.map((col) => (
               <th
                 key={col}
-                className="px-4 py-3 text-[11px] font-medium tracking-wide text-ink-muted uppercase whitespace-nowrap"
+                className="bg-slate-50 px-4 py-3 text-[11px] font-medium tracking-wide text-ink-muted uppercase whitespace-nowrap"
               >
                 {col}
               </th>
