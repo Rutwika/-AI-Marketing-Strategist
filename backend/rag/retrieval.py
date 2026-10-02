@@ -7,6 +7,7 @@ request - same best-effort philosophy as main.py's _save_run.
 """
 
 import logging
+import re
 from dataclasses import dataclass, field
 
 from rag import config
@@ -15,11 +16,21 @@ from rag.pinecone_client import get_index
 
 logger = logging.getLogger("ai_marketing_strategist")
 
+SNIPPET_SENTENCE_LIMIT = 3
+
 
 @dataclass
 class RetrievedContext:
     chunks: list[str] = field(default_factory=list)
     sources: list[str] = field(default_factory=list)
+    # source filename -> ~3-sentence excerpt from the first (most relevant)
+    # chunk retrieved for that source, for display next to the citation.
+    snippets: dict[str, str] = field(default_factory=dict)
+
+
+def _snippet(text: str, max_sentences: int = SNIPPET_SENTENCE_LIMIT) -> str:
+    sentences = re.split(r"(?<=[.!?])\s+", text.strip())
+    return " ".join(sentences[:max_sentences]).strip()
 
 
 def _query_segment(segment_name: str) -> RetrievedContext:
@@ -33,6 +44,7 @@ def _query_segment(segment_name: str) -> RetrievedContext:
 
     chunks: list[str] = []
     sources: list[str] = []
+    snippets: dict[str, str] = {}
     for match in response.matches:
         metadata = match.metadata or {}
         text = metadata.get("text")
@@ -41,7 +53,9 @@ def _query_segment(segment_name: str) -> RetrievedContext:
             chunks.append(text)
         if source and source not in sources:
             sources.append(source)
-    return RetrievedContext(chunks=chunks, sources=sources)
+            if text:
+                snippets[source] = _snippet(text)
+    return RetrievedContext(chunks=chunks, sources=sources, snippets=snippets)
 
 
 def get_research_context(

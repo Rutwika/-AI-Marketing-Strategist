@@ -13,7 +13,16 @@ from pydantic import BaseModel, Field
 
 from rag import retrieval
 from rules import BUSINESS_RULES_PROMPT
-from schemas import AnalyzeResult, Channel, Confidence, CustomerResult, Segment, SummaryBlock, ValueTier
+from schemas import (
+    AnalyzeResult,
+    Channel,
+    Confidence,
+    CustomerResult,
+    Segment,
+    SourceCitation,
+    SummaryBlock,
+    ValueTier,
+)
 
 GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-3.5-flash-lite")
 TEMPERATURE = 0.2
@@ -175,11 +184,12 @@ def analyze(csv_text: str, custom_segments: str | None) -> AnalyzeResult:
     # fits_custom_segment (that flag reflects the model's self-reported intent
     # and isn't reliable enough to branch key-lookup logic on).
     empty_context = retrieval.RetrievedContext()
-    results = [
-        CustomerResult(
-            **row.model_dump(),
-            sources=context_by_segment.get(row.segment, empty_context).sources,
-        )
-        for row in llm_result.results
-    ]
+    results = []
+    for row in llm_result.results:
+        context = context_by_segment.get(row.segment, empty_context)
+        sources = [
+            SourceCitation(document=src, excerpt=context.snippets.get(src, ""))
+            for src in context.sources
+        ]
+        results.append(CustomerResult(**row.model_dump(), sources=sources))
     return AnalyzeResult(summary=llm_result.summary, results=results, rag_warning=rag_warning)

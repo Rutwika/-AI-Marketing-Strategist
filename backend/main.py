@@ -131,7 +131,7 @@ def _save_run(user_id: str, file_name: str, row_count: int, custom_segments: str
                 "offer": r.offer,
                 "discount_pct": r.discount_pct,
                 "confidence": r.confidence,
-                "sources": r.sources,
+                "sources": [s.model_dump() for s in r.sources],
             }
             for r in result.results
         ]

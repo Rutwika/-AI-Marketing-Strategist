@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { analyzeCsv, ApiError } from '../lib/api'
 import { useAuth } from '../context/AuthContext'
 import type { AnalyzeResult } from '../lib/types'
-import { ResultsCards } from '../components/ResultsCards'
+import { ResultsTable } from '../components/ResultsTable'
 
 const MAX_ROWS = 20
 
@@ -217,7 +217,7 @@ export function Analyze() {
             </div>
           </div>
 
-          <ResultsCards results={result.results} />
+          <ResultsTable results={result.results} />
         </div>
       )}
     </div>

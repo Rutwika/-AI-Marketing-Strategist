@@ -13,6 +13,11 @@ export type ValueTier = 'High' | 'Medium' | 'Low'
 export type Channel = 'email' | 'sms' | 'push' | 'paid_social' | 'none'
 export type Confidence = 'high' | 'medium' | 'low'
 
+export interface SourceCitation {
+  document: string
+  excerpt: string
+}
+
 export interface CustomerResult {
   customer_id: string
   segment: Segment
@@ -25,7 +30,7 @@ export interface CustomerResult {
   discount_pct: number
   timing: string
   confidence: Confidence
-  sources: string[]
+  sources: SourceCitation[]
 }
 
 export interface AnalyzeResult {
