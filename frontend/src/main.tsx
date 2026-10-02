@@ -9,6 +9,7 @@ import { Analyze } from './pages/Analyze'
 import { Landing } from './pages/Landing'
 import { Login } from './pages/Login'
 import { Main } from './pages/Main'
+import { Segments } from './pages/Segments'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -31,6 +32,14 @@ createRoot(document.getElementById('root')!).render(
               element={
                 <ProtectedRoute>
                   <Analyze />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/app/segments"
+              element={
+                <ProtectedRoute>
+                  <Segments />
                 </ProtectedRoute>
               }
             />

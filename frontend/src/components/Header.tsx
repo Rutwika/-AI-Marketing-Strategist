@@ -17,6 +17,9 @@ export function Header() {
               <Link to="/app" className="text-white/70 hover:text-white">
                 Dashboard
               </Link>
+              <Link to="/app/segments" className="text-white/70 hover:text-white">
+                Segments
+              </Link>
               <span className="hidden text-white/40 sm:inline">{user.email}</span>
               <button
                 onClick={async () => {

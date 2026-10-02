@@ -37,6 +37,9 @@ export function Main() {
         >
           Upload a CSV
         </Link>
+        <Link to="/app/segments" className="text-sm font-medium text-slate-600 underline hover:text-ink">
+          What do the segments mean?
+        </Link>
         <a
           href="/sample-customers.csv"
           download
