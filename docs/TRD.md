@@ -10,6 +10,7 @@
 | Author | Rutwika |
 | Status | Draft |
 | Linked PRD | PRD — AI Marketing Strategist |
+| Related docs | TRD — AI Marketing Strategist: Results Chatbot (extension) |
 | Build tool | Claude Code (reads this TRD + the PRD as starting context) |
 | Repo / live URL | github.com/Rutwika/-AI-Marketing-Strategist / [Vercel link] |
 

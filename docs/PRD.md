@@ -11,7 +11,7 @@
 | Mentor | Hari Prasad (MyRealProduct program) |
 | Status | Draft — Week 1 (MVP) |
 | Program week | Week 1 of 4: MVP → RAG → Agents → Reliability |
-| Related docs | TRD — AI Marketing Strategist; GitHub repo [link]; live URL [link] |
+| Related docs | TRD — AI Marketing Strategist; PRD — AI Marketing Strategist: Results Chatbot (extension); GitHub repo [link]; live URL [link] |
 
 ## One-line solution
 
