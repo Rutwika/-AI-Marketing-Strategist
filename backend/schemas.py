@@ -95,3 +95,26 @@ class RunRecord(BaseModel):
 
 class ErrorResponse(BaseModel):
     detail: str
+
+
+class ChatRequest(BaseModel):
+    """Request body for POST /api/chat. The table is passed inline (the
+    frontend already holds it in memory right after an analyze run) rather
+    than looked up by run_id - see docs/TRD_chatbot.md > "Data storage &
+    security" for why (run_results has no timing column yet)."""
+
+    question: str = Field(min_length=1, max_length=500)
+    table: AnalyzeResult
+
+
+class ChatResponse(BaseModel):
+    """Response body for POST /api/chat."""
+
+    answer: str
+    route: Literal["table_qa", "exa_rag"]
+    warning: Optional[str] = Field(
+        default=None,
+        description="Set when the router, table lookup, or web search degraded (e.g. Exa "
+        "failed) - the chat still answers, fail-open, same philosophy as AnalyzeResult.rag_warning.",
+    )
+    citations: list[SourceCitation] = Field(default_factory=list)

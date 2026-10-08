@@ -3,6 +3,7 @@ import { analyzeCsv, ApiError } from '../lib/api'
 import { useAuth } from '../context/AuthContext'
 import type { AnalyzeResult } from '../lib/types'
 import { ResultsTable } from '../components/ResultsTable'
+import { ChatPanel } from '../components/ChatPanel'
 
 const MAX_ROWS = 20
 
@@ -218,6 +219,7 @@ export function Analyze() {
           </div>
 
           <ResultsTable results={result.results} />
+          {session && <ChatPanel table={result} accessToken={session.access_token} />}
         </div>
       )}
     </div>

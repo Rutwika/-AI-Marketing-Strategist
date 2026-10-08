@@ -2,12 +2,15 @@ fastapi==0.115.6
 uvicorn[standard]==0.32.1
 python-multipart==0.0.20
 pandas==2.2.3
-pydantic==2.10.3
+pydantic==2.14.0
 langchain==0.3.13
 langchain-google-genai==2.0.7
 pinecone==10.0.0
 pypdf==6.19.0
 supabase==2.10.0
 python-dotenv==1.0.1
+# Chatbot (router + table_qa + exa_rag + simplify, see backend/chatbot/)
+langgraph==0.2.76
+exa-py==1.9.0
 pytest==8.3.4
 pytest-asyncio==0.24.0

@@ -1,4 +1,4 @@
-import type { AnalyzeResult, RunRecord } from './types'
+import type { AnalyzeResult, ChatResponse, RunRecord } from './types'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000'
 
@@ -38,6 +38,20 @@ export async function analyzeCsv(
   if (!response.ok) {
     throw new ApiError(response.status, await parseErrorMessage(response))
   }
+  return response.json()
+}
+
+export async function askChat(
+  question: string,
+  table: AnalyzeResult,
+  accessToken: string,
+): Promise<ChatResponse> {
+  const response = await fetch(`${API_BASE_URL}/api/chat`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ question, table }),
+  })
+  if (!response.ok) throw new ApiError(response.status, await parseErrorMessage(response))
   return response.json()
 }
 

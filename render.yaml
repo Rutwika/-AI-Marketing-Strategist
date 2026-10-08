@@ -38,3 +38,12 @@ services:
         value: us-east-1
       - key: RAG_TOP_K
         value: "3"
+      # Exa (chatbot: web-search RAG node, see backend/chatbot/)
+      - key: EXA_API_KEY
+        sync: false
+      - key: EXA_NUM_RESULTS
+        value: "8"
+      - key: EXA_TOP_K
+        value: "3"
+      - key: CHAT_GEMINI_MODEL
+        value: gemini-3.5-flash-lite

@@ -1,8 +1,9 @@
 """FastAPI app for AI Marketing Strategist (Week 1 MVP).
 
-Routes (docs/TRD.md > "API endpoints"):
+Routes (docs/TRD.md > "API endpoints"; docs/TRD_chatbot.md for /api/chat):
   GET  /api/health          - no auth
   POST /api/analyze         - CSV upload (+ optional custom segments) -> AnalyzeResult
+  POST /api/chat            - question + in-memory table -> routed, cited answer
   GET  /api/runs            - the caller's past runs
   GET  /api/runs/{run_id}   - one saved run, with its results
 """
@@ -22,7 +23,8 @@ load_dotenv()
 
 import chain
 import rules
-from schemas import AnalyzeResult, CustomerResult, RunRecord, SummaryBlock
+from chatbot.graph import run_chat
+from schemas import AnalyzeResult, ChatRequest, ChatResponse, CustomerResult, RunRecord, SummaryBlock
 from supabase_client import get_client, get_user_id
 
 logger = logging.getLogger("ai_marketing_strategist")
@@ -188,6 +190,20 @@ async def analyze(
         status.HTTP_502_BAD_GATEWAY,
         f"The AI model's output didn't pass our business-rule checks after a retry: {'; '.join(last_violations)}",
     )
+
+
+@app.post("/api/chat", response_model=ChatResponse)
+async def chat(body: ChatRequest, authorization: str | None = Header(default=None)):
+    await run_in_threadpool(get_user_id, authorization)
+
+    if len(body.table.results) > MAX_ROWS:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, f"Table has more than {MAX_ROWS} rows.")
+
+    try:
+        return await run_in_threadpool(run_chat, body.question, body.table)
+    except Exception as exc:
+        logger.exception("Chat graph failed to run.")
+        raise HTTPException(status.HTTP_502_BAD_GATEWAY, "The chatbot failed to respond. Please try again.") from exc
 
 
 @app.get("/api/runs", response_model=list[RunRecord])

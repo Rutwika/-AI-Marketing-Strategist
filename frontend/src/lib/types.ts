@@ -50,3 +50,15 @@ export interface RunRecord {
   created_at: string
   result?: AnalyzeResult | null
 }
+
+export interface ChatRequest {
+  question: string
+  table: AnalyzeResult
+}
+
+export interface ChatResponse {
+  answer: string
+  route: 'table_qa' | 'exa_rag'
+  warning?: string | null
+  citations: SourceCitation[]
+}
