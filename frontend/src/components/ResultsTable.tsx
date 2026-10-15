@@ -1,13 +1,5 @@
 import type { CustomerResult } from '../lib/types'
-
-const SEGMENT_COLORS: Record<string, string> = {
-  Champions: 'bg-emerald-100 text-emerald-800',
-  'New Potential': 'bg-sky-100 text-sky-800',
-  'At-Risk High-Value': 'bg-amber-100 text-amber-800',
-  'High-Intent Window Shoppers': 'bg-violet-100 text-violet-800',
-  'Bargain Hunters': 'bg-orange-100 text-orange-800',
-  Hibernating: 'bg-slate-200 text-slate-700',
-}
+import { SEGMENT_INFO } from '../lib/segments'
 
 const CONFIDENCE_LABEL: Record<string, string> = {
   high: 'High',
@@ -34,24 +26,32 @@ const COLUMN_DEFS: ColumnDef[] = [
   {
     key: 'segment',
     label: 'Segment',
-    cellClassName: 'px-4 py-3 whitespace-nowrap',
+    cellClassName: 'min-w-[220px] px-4 py-3',
     hasValue: (r) => Boolean(r.segment),
-    render: (r) => (
-      <>
-        <span
-          className={`rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap ${
-            SEGMENT_COLORS[r.segment] ?? 'bg-slate-100 text-slate-700'
-          }`}
-        >
-          {r.segment}
-        </span>
-        {!r.fits_custom_segment && (
-          <div className="mt-1 text-[10px] text-ink-muted" title="Closest default segment used">
-            default segment
-          </div>
-        )}
-      </>
-    ),
+    render: (r) => {
+      const info = SEGMENT_INFO[r.segment]
+      return (
+        <>
+          <span
+            className={`rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap ${
+              info?.color ?? 'bg-slate-100 text-slate-700'
+            }`}
+          >
+            {r.segment}
+          </span>
+          {info && (
+            <p className="mt-1.5 text-xs leading-snug text-ink-muted">
+              {info.description} {info.signal}
+            </p>
+          )}
+          {!r.fits_custom_segment && (
+            <div className="mt-1 text-[10px] text-ink-muted" title="Closest default segment used">
+              default segment
+            </div>
+          )}
+        </>
+      )
+    },
   },
   {
     key: 'value_tier',
@@ -65,7 +65,16 @@ const COLUMN_DEFS: ColumnDef[] = [
     label: 'Reason',
     cellClassName: 'min-w-[260px] px-4 py-3 text-ink-soft',
     hasValue: (r) => Boolean(r.reason),
-    render: (r) => r.reason,
+    render: (r) => (
+      <>
+        <p>{r.reason}</p>
+        {r.sources.map((s) => (
+          <p key={s.document} className="mt-1.5 text-xs text-ink-muted italic" title={s.excerpt}>
+            Source: {s.document}
+          </p>
+        ))}
+      </>
+    ),
   },
   {
     key: 'channel',
@@ -101,29 +110,6 @@ const COLUMN_DEFS: ColumnDef[] = [
     cellClassName: 'px-4 py-3 whitespace-nowrap text-ink-soft',
     hasValue: (r) => Boolean(r.confidence),
     render: (r) => CONFIDENCE_LABEL[r.confidence] ?? r.confidence,
-  },
-  {
-    key: 'sources',
-    label: 'Sources',
-    cellClassName: 'min-w-[280px] px-4 py-3',
-    hasValue: (r) => r.sources.length > 0,
-    render: (r) =>
-      r.sources.length === 0 ? (
-        <span className="text-ink-muted">—</span>
-      ) : (
-        <ul className="space-y-2">
-          {r.sources.map((s) => (
-            <li key={s.document}>
-              <span className="block text-[10px] font-medium text-slate-600" title={s.document}>
-                {s.document}
-              </span>
-              {s.excerpt && (
-                <span className="block text-xs leading-snug text-ink-muted italic">“{s.excerpt}”</span>
-              )}
-            </li>
-          ))}
-        </ul>
-      ),
   },
 ]
 

@@ -154,15 +154,6 @@ export function Analyze() {
             />
           </label>
 
-          <div className="mt-4 rounded-md bg-slate-50 px-4 py-3 text-xs text-slate-600">
-            <p className="font-medium text-slate-700">Business rules applied to every recommendation</p>
-            <ul className="mt-1 list-disc pl-4">
-              <li>Never a discount above 20%</li>
-              <li>Champions never get a discount</li>
-              <li>Cheapest channel first (email/push before SMS, paid social as a last resort)</li>
-            </ul>
-          </div>
-
           {status === 'error' && errorMessage && (
             <div className="mt-4 flex items-center justify-between rounded-md bg-red-50 px-4 py-3 text-sm text-red-700">
               <span>{errorMessage}</span>
