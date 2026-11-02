@@ -3,6 +3,8 @@
 *Oct 8, 2026 · @Rutwika*
 
 > **Chatbot extension:** a marketing manager looking at a results table can ask it a question in plain English — about a specific customer, a segment count, or general marketing practice — and get back one simple, sourced answer without leaving the page.
+>
+> **Update, Nov 2, 2026:** login was removed app-wide — the success-criteria line below about requiring login no longer applies; the endpoint is open like every other route.
 
 | Field | Value |
 |---|---|

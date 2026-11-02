@@ -3,6 +3,8 @@
 *Oct 8, 2026 · @Rutwika*
 
 > **Build summary:** a new `POST /api/chat` endpoint runs a LangGraph graph — router → (table_qa | exa_rag) → simplify — against the `AnalyzeResult` the frontend already holds in memory, and a new chat panel renders it next to the results table. No new database tables.
+>
+> **Update, Nov 2, 2026:** login was removed app-wide, so `/api/chat` (like every other endpoint) no longer requires a Supabase JWT. References below to "the Supabase JWT" / "same pattern as every other route" describe the state at the time this was written.
 
 | Field | Value |
 |---|---|

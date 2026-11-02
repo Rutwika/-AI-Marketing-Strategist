@@ -3,6 +3,8 @@
 *Sep 23, 2026 · @Rutwika*
 
 > **Week 1 MVP:** a marketing manager uploads a customer CSV and gets back a segment and a next-best action for every customer, from a live URL, by Friday.
+>
+> **Update, Nov 2, 2026:** the "Simple login (Supabase auth) and saved past runs" feature below was removed — upload and analyze no longer require an account. The rest of this doc is kept as the historical record of what Week 1 originally planned.
 
 | Field | Value |
 |---|---|

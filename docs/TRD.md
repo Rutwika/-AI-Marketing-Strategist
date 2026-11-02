@@ -3,6 +3,8 @@
 *Sep 23, 2026 · @Rutwika*
 
 > **Week 1 build:** a React frontend on Vercel calls a FastAPI backend, which parses the uploaded CSV and sends it through one LangChain + Gemini call that returns structured segments and recommendations; Supabase handles login and saved runs.
+>
+> **Update, Nov 2, 2026:** login/signup and saved runs (Supabase auth, the `runs`/`run_results` tables, `GET /api/runs(/{id})`) were removed — every endpoint is now open and nothing is persisted between requests. The rest of this doc is kept as the historical build record; read the "Supabase"/"login" references below as describing what Week 1 originally shipped, not the current app.
 
 | Field | Value |
 |---|---|

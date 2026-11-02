@@ -82,17 +82,6 @@ class AnalyzeRequestMeta(BaseModel):
     )
 
 
-class RunRecord(BaseModel):
-    """Row shape returned by GET /api/runs and /api/runs/{id}."""
-
-    id: str
-    file_name: str
-    row_count: int
-    custom_segments: Optional[str] = None
-    created_at: str
-    result: Optional[AnalyzeResult] = None
-
-
 class ErrorResponse(BaseModel):
     detail: str
 

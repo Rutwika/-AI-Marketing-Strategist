@@ -42,15 +42,6 @@ export interface AnalyzeResult {
   rag_warning?: string | null
 }
 
-export interface RunRecord {
-  id: string
-  file_name: string
-  row_count: number
-  custom_segments: string | null
-  created_at: string
-  result?: AnalyzeResult | null
-}
-
 export interface ChatRequest {
   question: string
   table: AnalyzeResult

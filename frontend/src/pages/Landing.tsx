@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
 
 const EXAMPLE = {
   customer_id: 'C002',
@@ -28,8 +27,7 @@ const FEATURES = [
 ]
 
 export function Landing() {
-  const { user } = useAuth()
-  const ctaTarget = user ? '/app' : '/login'
+  const ctaTarget = '/app'
 
   return (
     <div>

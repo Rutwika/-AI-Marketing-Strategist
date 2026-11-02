@@ -15,10 +15,6 @@ services:
         value: 3.13.15
       - key: GOOGLE_API_KEY
         sync: false
-      - key: SUPABASE_URL
-        sync: false
-      - key: SUPABASE_SERVICE_KEY
-        sync: false
       # Comma-separated - main.py splits on "," (see FastAPI CORSMiddleware
       # setup). Includes localhost too so local dev keeps working.
       - key: FRONTEND_ORIGIN

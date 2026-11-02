@@ -6,8 +6,9 @@ My Real Product program. Full spec: [`docs/PRD.md`](docs/PRD.md) · [`docs/TRD.m
 
 ## Stack
 
-React (Vite + Tailwind) → FastAPI → LangChain + Gemini, with Supabase for auth and saved runs.
-See `docs/TRD.md` for the full architecture.
+React (Vite + Tailwind) → FastAPI → LangChain + Gemini. No accounts — upload a CSV and get
+results back directly; nothing is saved between runs. See `docs/TRD.md` for the full architecture
+(some of it, e.g. auth and saved runs, predates that removal — see the note at the top of the doc).
 
 ## Local setup
 
@@ -18,15 +19,11 @@ cd backend
 python -m venv .venv
 .venv\Scripts\activate          # Windows; use `source .venv/bin/activate` on macOS/Linux
 pip install -r requirements.txt
-copy .env.example .env          # then fill in GOOGLE_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_KEY
+copy .env.example .env          # then fill in GOOGLE_API_KEY (and Pinecone/Exa keys, see .env.example)
 uvicorn main:app --reload --port 8000
 ```
 
 Run the tests with `pytest` from inside `backend/`.
-
-Supabase setup: create a free project at [supabase.com](https://supabase.com), then run
-[`backend/supabase_schema.sql`](backend/supabase_schema.sql) in its SQL editor to create the
-`runs` and `run_results` tables.
 
 Gemini key: create a free key at [Google AI Studio](https://aistudio.google.com/app/apikey).
 
@@ -35,7 +32,7 @@ Gemini key: create a free key at [Google AI Studio](https://aistudio.google.com/
 ```bash
 cd frontend
 npm install
-copy .env.example .env          # then fill in VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY
+copy .env.example .env          # defaults to the local backend; edit VITE_API_BASE_URL if needed
 npm run dev
 ```
 

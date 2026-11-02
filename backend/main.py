@@ -1,11 +1,11 @@
 """FastAPI app for AI Marketing Strategist (Week 1 MVP).
 
+No accounts: every endpoint is open, nothing is persisted between requests.
+
 Routes (docs/TRD.md > "API endpoints"; docs/TRD_chatbot.md for /api/chat):
-  GET  /api/health          - no auth
+  GET  /api/health          - health check
   POST /api/analyze         - CSV upload (+ optional custom segments) -> AnalyzeResult
   POST /api/chat            - question + in-memory table -> routed, cited answer
-  GET  /api/runs            - the caller's past runs
-  GET  /api/runs/{run_id}   - one saved run, with its results
 """
 
 import io
@@ -15,7 +15,7 @@ from datetime import datetime, timezone
 
 import pandas as pd
 from dotenv import load_dotenv
-from fastapi import FastAPI, File, Form, Header, HTTPException, UploadFile, status
+from fastapi import FastAPI, File, Form, HTTPException, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.concurrency import run_in_threadpool
 
@@ -24,8 +24,7 @@ load_dotenv()
 import chain
 import rules
 from chatbot.graph import run_chat
-from schemas import AnalyzeResult, ChatRequest, ChatResponse, CustomerResult, RunRecord, SummaryBlock
-from supabase_client import get_client, get_user_id
+from schemas import AnalyzeResult, ChatRequest, ChatResponse
 
 logger = logging.getLogger("ai_marketing_strategist")
 
@@ -102,47 +101,6 @@ async def _read_and_validate_csv(file: UploadFile) -> tuple[pd.DataFrame, str]:
     return df, clean_csv_text
 
 
-def _save_run(user_id: str, file_name: str, row_count: int, custom_segments: str | None, result: AnalyzeResult) -> None:
-    """Best-effort save to Supabase. A storage failure must not lose the
-    marketer's already-computed results, so this only logs on error."""
-
-    try:
-        client = get_client()
-        run = (
-            client.table("runs")
-            .insert(
-                {
-                    "user_id": user_id,
-                    "file_name": file_name,
-                    "row_count": row_count,
-                    "custom_segments": custom_segments,
-                }
-            )
-            .execute()
-        )
-        run_id = run.data[0]["id"]
-        rows = [
-            {
-                "run_id": run_id,
-                "customer_id": r.customer_id,
-                "segment": r.segment,
-                "value_tier": r.value_tier,
-                "reason": r.reason,
-                "channel": r.channel,
-                "action": r.action,
-                "offer": r.offer,
-                "discount_pct": r.discount_pct,
-                "confidence": r.confidence,
-                "sources": [s.model_dump() for s in r.sources],
-            }
-            for r in result.results
-        ]
-        if rows:
-            client.table("run_results").insert(rows).execute()
-    except Exception:
-        logger.exception("Failed to save run to Supabase (results are still returned to the user).")
-
-
 @app.get("/api/health")
 def health():
     return {"status": "ok", "time": datetime.now(timezone.utc).isoformat()}
@@ -152,16 +110,7 @@ def health():
 async def analyze(
     file: UploadFile = File(...),
     custom_segments: str | None = Form(default=None),
-    authorization: str | None = Header(default=None),
 ):
-    # get_user_id, chain.analyze and _save_run are all synchronous, blocking
-    # I/O (HTTP calls to Supabase/Gemini). Run them in a thread pool instead
-    # of calling them directly - a blocking call here would freeze this
-    # process's single event loop for the whole request, including Render's
-    # own health-check pings, which reads as the service being dead and
-    # triggers a restart mid-request.
-    user_id = await run_in_threadpool(get_user_id, authorization)
-
     if custom_segments and len(custom_segments) > 1000:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "custom_segments must be 1000 characters or fewer.")
 
@@ -180,7 +129,6 @@ async def analyze(
 
         violations = rules.check_guardrails(input_ids, result)
         if not violations:
-            await run_in_threadpool(_save_run, user_id, file.filename or "upload.csv", len(df), custom_segments, result)
             return result
 
         last_violations = violations
@@ -193,9 +141,7 @@ async def analyze(
 
 
 @app.post("/api/chat", response_model=ChatResponse)
-async def chat(body: ChatRequest, authorization: str | None = Header(default=None)):
-    await run_in_threadpool(get_user_id, authorization)
-
+async def chat(body: ChatRequest):
     if len(body.table.results) > MAX_ROWS:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, f"Table has more than {MAX_ROWS} rows.")
 
@@ -204,68 +150,3 @@ async def chat(body: ChatRequest, authorization: str | None = Header(default=Non
     except Exception as exc:
         logger.exception("Chat graph failed to run.")
         raise HTTPException(status.HTTP_502_BAD_GATEWAY, "The chatbot failed to respond. Please try again.") from exc
-
-
-@app.get("/api/runs", response_model=list[RunRecord])
-def list_runs(authorization: str | None = Header(default=None)):
-    user_id = get_user_id(authorization)
-    client = get_client()
-    rows = (
-        client.table("runs")
-        .select("*")
-        .eq("user_id", user_id)
-        .order("created_at", desc=True)
-        .execute()
-    )
-    return [
-        RunRecord(
-            id=row["id"],
-            file_name=row["file_name"],
-            row_count=row["row_count"],
-            custom_segments=row.get("custom_segments"),
-            created_at=row["created_at"],
-        )
-        for row in rows.data
-    ]
-
-
-@app.get("/api/runs/{run_id}", response_model=RunRecord)
-def get_run(run_id: str, authorization: str | None = Header(default=None)):
-    user_id = get_user_id(authorization)
-    client = get_client()
-
-    run_resp = client.table("runs").select("*").eq("id", run_id).eq("user_id", user_id).execute()
-    if not run_resp.data:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, "Run not found.")
-    run = run_resp.data[0]
-
-    results_resp = client.table("run_results").select("*").eq("run_id", run_id).execute()
-    results = [
-        CustomerResult(
-            customer_id=r["customer_id"],
-            segment=r["segment"],
-            value_tier=r["value_tier"],
-            fits_custom_segment=bool(run.get("custom_segments")),
-            reason=r["reason"],
-            channel=r["channel"],
-            action=r["action"],
-            offer=r["offer"],
-            discount_pct=r["discount_pct"],
-            timing=r.get("timing", ""),
-            confidence=r["confidence"],
-            sources=r.get("sources") or [],
-        )
-        for r in results_resp.data
-    ]
-    segments: dict[str, int] = {}
-    for r in results:
-        segments[r.segment] = segments.get(r.segment, 0) + 1
-
-    return RunRecord(
-        id=run["id"],
-        file_name=run["file_name"],
-        row_count=run["row_count"],
-        custom_segments=run.get("custom_segments"),
-        created_at=run["created_at"],
-        result=AnalyzeResult(summary=SummaryBlock(total_customers=len(results), segments=segments), results=results),
-    )

@@ -33,7 +33,7 @@ function CloseIcon() {
   )
 }
 
-export function ChatPanel({ table, accessToken }: { table: AnalyzeResult; accessToken: string }) {
+export function ChatPanel({ table }: { table: AnalyzeResult }) {
   const [open, setOpen] = useState(false)
   const [question, setQuestion] = useState('')
   const [messages, setMessages] = useState<Message[]>([])
@@ -49,7 +49,7 @@ export function ChatPanel({ table, accessToken }: { table: AnalyzeResult; access
     setMessages((prev) => [...prev, { question: q }])
 
     try {
-      const response = await askChat(q, table, accessToken)
+      const response = await askChat(q, table)
       setMessages((prev) => prev.map((m, i) => (i === index ? { ...m, response } : m)))
     } catch (err) {
       const message = err instanceof ApiError ? err.message : 'Something went wrong asking that question.'

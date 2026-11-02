@@ -1,4 +1,4 @@
-import type { AnalyzeResult, ChatResponse, RunRecord } from './types'
+import type { AnalyzeResult, ChatResponse } from './types'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000'
 
@@ -20,18 +20,13 @@ async function parseErrorMessage(response: Response): Promise<string> {
   return response.statusText || `Request failed with status ${response.status}`
 }
 
-export async function analyzeCsv(
-  file: File,
-  customSegments: string,
-  accessToken: string,
-): Promise<AnalyzeResult> {
+export async function analyzeCsv(file: File, customSegments: string): Promise<AnalyzeResult> {
   const form = new FormData()
   form.append('file', file)
   if (customSegments.trim()) form.append('custom_segments', customSegments.trim())
 
   const response = await fetch(`${API_BASE_URL}/api/analyze`, {
     method: 'POST',
-    headers: { Authorization: `Bearer ${accessToken}` },
     body: form,
   })
 
@@ -41,31 +36,11 @@ export async function analyzeCsv(
   return response.json()
 }
 
-export async function askChat(
-  question: string,
-  table: AnalyzeResult,
-  accessToken: string,
-): Promise<ChatResponse> {
+export async function askChat(question: string, table: AnalyzeResult): Promise<ChatResponse> {
   const response = await fetch(`${API_BASE_URL}/api/chat`, {
     method: 'POST',
-    headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ question, table }),
-  })
-  if (!response.ok) throw new ApiError(response.status, await parseErrorMessage(response))
-  return response.json()
-}
-
-export async function listRuns(accessToken: string): Promise<RunRecord[]> {
-  const response = await fetch(`${API_BASE_URL}/api/runs`, {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  })
-  if (!response.ok) throw new ApiError(response.status, await parseErrorMessage(response))
-  return response.json()
-}
-
-export async function getRun(id: string, accessToken: string): Promise<RunRecord> {
-  const response = await fetch(`${API_BASE_URL}/api/runs/${id}`, {
-    headers: { Authorization: `Bearer ${accessToken}` },
   })
   if (!response.ok) throw new ApiError(response.status, await parseErrorMessage(response))
   return response.json()

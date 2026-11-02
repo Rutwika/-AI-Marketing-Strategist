@@ -1,5 +1,5 @@
-"""Pinecone client/index singletons, mirroring supabase_client.py's
-get_client() lru_cache pattern."""
+"""Pinecone client/index singletons, using an lru_cache to avoid
+reconnecting on every request."""
 
 from functools import lru_cache
 

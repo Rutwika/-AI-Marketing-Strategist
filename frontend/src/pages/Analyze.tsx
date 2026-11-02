@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react'
 import { analyzeCsv, ApiError } from '../lib/api'
-import { useAuth } from '../context/AuthContext'
 import type { AnalyzeResult } from '../lib/types'
 import { ResultsTable } from '../components/ResultsTable'
 import { ChatPanel } from '../components/ChatPanel'
@@ -10,7 +9,6 @@ const MAX_ROWS = 20
 type Status = 'idle' | 'loading' | 'success' | 'error'
 
 export function Analyze() {
-  const { session } = useAuth()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [file, setFile] = useState<File | null>(null)
@@ -58,7 +56,7 @@ export function Analyze() {
   }
 
   async function runAnalysis() {
-    if (!file || !session) return
+    if (!file) return
 
     setStatus('loading')
     setErrorMessage(null)
@@ -76,7 +74,7 @@ export function Analyze() {
         return
       }
 
-      const data = await analyzeCsv(file, customSegments, session.access_token)
+      const data = await analyzeCsv(file, customSegments)
       setResult(data)
       setStatus('success')
     } catch (err) {
@@ -210,7 +208,7 @@ export function Analyze() {
           </div>
 
           <ResultsTable results={result.results} />
-          {session && <ChatPanel table={result} accessToken={session.access_token} />}
+          <ChatPanel table={result} />
         </div>
       )}
     </div>
