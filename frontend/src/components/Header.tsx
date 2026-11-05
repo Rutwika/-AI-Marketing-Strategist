@@ -8,12 +8,6 @@ export function Header() {
           Roma
         </Link>
         <nav className="flex items-center gap-5 text-sm">
-          <Link to="/app" className="text-white/70 hover:text-white">
-            Dashboard
-          </Link>
-          <Link to="/app/segments" className="text-white/70 hover:text-white">
-            Segments
-          </Link>
           <Link
             to="/app/analyze"
             className="rounded-full bg-lime px-4 py-1.5 font-semibold text-ink hover:bg-lime-deep"

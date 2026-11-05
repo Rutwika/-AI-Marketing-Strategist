@@ -3,6 +3,7 @@ import { analyzeCsv, ApiError } from '../lib/api'
 import type { AnalyzeResult } from '../lib/types'
 import { ResultsTable } from '../components/ResultsTable'
 import { ChatPanel } from '../components/ChatPanel'
+import { SEGMENTS } from '../lib/segments'
 
 const MAX_ROWS = 20
 
@@ -16,6 +17,7 @@ export function Analyze() {
   const [status, setStatus] = useState<Status>('idle')
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [result, setResult] = useState<AnalyzeResult | null>(null)
+  const [resultsRevealed, setResultsRevealed] = useState(false)
 
   function validateFile(candidate: File): string | null {
     if (!candidate.name.toLowerCase().endsWith('.csv')) {
@@ -77,6 +79,7 @@ export function Analyze() {
       const data = await analyzeCsv(file, customSegments)
       setResult(data)
       setStatus('success')
+      setResultsRevealed(false)
     } catch (err) {
       setStatus('error')
       setErrorMessage(
@@ -93,6 +96,7 @@ export function Analyze() {
     setStatus('idle')
     setErrorMessage(null)
     setResult(null)
+    setResultsRevealed(false)
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
@@ -124,7 +128,9 @@ export function Analyze() {
   }
 
   return (
-    <div className={`mx-auto px-4 py-12 ${status === 'success' ? 'max-w-[1600px]' : 'max-w-4xl'}`}>
+    <div
+      className={`mx-auto px-4 py-12 ${status === 'success' && resultsRevealed ? 'max-w-[1600px]' : 'max-w-4xl'}`}
+    >
       <h1 className="text-3xl font-semibold text-ink">Analyze customers</h1>
 
       {status !== 'success' && (
@@ -173,7 +179,41 @@ export function Analyze() {
         </div>
       )}
 
-      {status === 'success' && result && (
+      {status === 'success' && result && !resultsRevealed && (
+        <div className="mt-8">
+          <h2 className="text-xl font-semibold text-ink">Here's what each segment means</h2>
+          <p className="mt-2 max-w-2xl text-sm text-slate-600">
+            Every customer in your file was assigned the closest of these six segments (or one of
+            your own custom segments, if you described them), each with its own recommended
+            approach.
+          </p>
+
+          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {SEGMENTS.map((s) => (
+              <div key={s.name} className="rounded-2xl border border-line bg-white p-5 shadow-sm">
+                <span className={`rounded-full px-3 py-1 text-xs font-semibold ${s.color}`}>
+                  {s.name}
+                </span>
+                <p className="mt-3 text-sm font-medium text-ink">{s.description}</p>
+                <p className="mt-1 text-xs text-ink-muted">{s.signal}</p>
+                <p className="mt-3 border-t border-line pt-3 text-xs text-ink-soft">
+                  <span className="font-medium text-ink">Typical approach: </span>
+                  {s.approach}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <button
+            onClick={() => setResultsRevealed(true)}
+            className="mt-8 rounded-full bg-ink px-6 py-3 font-medium text-white hover:bg-ink-soft"
+          >
+            See results →
+          </button>
+        </div>
+      )}
+
+      {status === 'success' && result && resultsRevealed && (
         <div className="mt-8">
           {result.rag_warning && (
             <div className="mb-4 rounded-md bg-amber-50 px-4 py-3 text-sm text-amber-800">
